@@ -11,7 +11,7 @@ namespace Hilke.KineticConvolution.Tests
     [TestFixture]
     public class AlgebraicNumberCalculatorExtensionsTests
     {
-        private IAlgebraicNumberCalculator<double> _calculator;
+        private IAlgebraicNumberCalculator<double>? _calculator;
 
         [SetUp]
         public void SetUp() => _calculator = new DoubleAlgebraicNumberCalculator();
@@ -23,7 +23,7 @@ namespace Hilke.KineticConvolution.Tests
             IAlgebraicNumberCalculator<double> calculator = null!;
 
             // Act
-            Action action = () => calculator.IsZero(3.25);
+            Action action = () => _ = calculator.IsZero(3.25);
 
             // Assert
             action.Should().ThrowExactly<ArgumentNullException>();
@@ -38,7 +38,7 @@ namespace Hilke.KineticConvolution.Tests
             bool expected)
         {
             // Act
-            var actual = _calculator.IsZero(value);
+            var actual = _calculator!.IsZero(value);
 
             // Assert
             actual.Should().Be(expected);
@@ -51,7 +51,7 @@ namespace Hilke.KineticConvolution.Tests
             IAlgebraicNumberCalculator<double> calculator = null!;
 
             // Act
-            Action action = () => calculator.IsStrictlyPositive(3.25);
+            Action action = () => _ = calculator.IsStrictlyPositive(3.25);
 
             // Assert
             action.Should().ThrowExactly<ArgumentNullException>();
@@ -67,7 +67,7 @@ namespace Hilke.KineticConvolution.Tests
             bool expected)
         {
             // Act
-            var actual = _calculator.IsStrictlyPositive(value);
+            var actual = _calculator!.IsStrictlyPositive(value);
 
             // Assert
             actual.Should().Be(expected);
@@ -80,7 +80,7 @@ namespace Hilke.KineticConvolution.Tests
             IAlgebraicNumberCalculator<double> calculator = null!;
 
             // Act
-            Action action = () => calculator.IsPositive(3.25);
+            Action action = () => _ = calculator.IsPositive(3.25);
 
             // Assert
             action.Should().ThrowExactly<ArgumentNullException>();
@@ -96,7 +96,7 @@ namespace Hilke.KineticConvolution.Tests
             bool expected)
         {
             // Act
-            var actual = _calculator.IsPositive(value);
+            var actual = _calculator!.IsPositive(value);
 
             // Assert
             actual.Should().Be(expected);
@@ -109,7 +109,7 @@ namespace Hilke.KineticConvolution.Tests
             IAlgebraicNumberCalculator<double> calculator = null!;
 
             // Act
-            Action action = () => calculator.IsStrictlyNegative(3.25);
+            Action action = () => _ = calculator.IsStrictlyNegative(3.25);
 
             // Assert
             action.Should().ThrowExactly<ArgumentNullException>();
@@ -126,7 +126,7 @@ namespace Hilke.KineticConvolution.Tests
             bool expected)
         {
             // Act
-            var actual = _calculator.IsStrictlyNegative(value);
+            var actual = _calculator!.IsStrictlyNegative(value);
 
             // Assert
             actual.Should().Be(expected);
@@ -139,7 +139,7 @@ namespace Hilke.KineticConvolution.Tests
             IAlgebraicNumberCalculator<double> calculator = null!;
 
             // Act
-            Action action = () => calculator.IsNegative(3.25);
+            Action action = () => _ = calculator.IsNegative(3.25);
 
             // Assert
             action.Should().ThrowExactly<ArgumentNullException>();
@@ -156,7 +156,7 @@ namespace Hilke.KineticConvolution.Tests
             bool expected)
         {
             // Act
-            var actual = _calculator.IsNegative(value);
+            var actual = _calculator!.IsNegative(value);
 
             // Assert
             actual.Should().Be(expected);
