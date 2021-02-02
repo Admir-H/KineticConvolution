@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 using FluentAssertions;
 
@@ -11,14 +12,32 @@ namespace Hilke.KineticConvolution.Tests
     [TestFixture]
     public class ConvolutionFactoryTests
     {
-        private ConvolutionFactory<double> _factory;
+        private IAlgebraicNumberCalculator<double>? _calculator;
+        private ConvolutionFactory<double>? _factory;
 
         [SetUp]
         public void SetUp()
         {
-            var calculator = new DoubleAlgebraicNumberCalculator();
-            _factory = new ConvolutionFactory<double>(calculator);
+            _calculator = new DoubleAlgebraicNumberCalculator();
+            _factory = new ConvolutionFactory<double>(_calculator);
         }
+
+        [Test]
+        public void When_calling_ConvolutionFactory_constructor_With_null_parameter_Then_an_ArgumentNullException_Should_be_thrown()
+        {
+            // Arrange
+            IAlgebraicNumberCalculator<double> nullCalculator = null!;
+
+            // Act
+            Action action = () => _ = new ConvolutionFactory<double>(nullCalculator);
+
+            // Assert
+            action.Should().ThrowExactly<ArgumentNullException>();
+        }
+
+        [Test]
+        public void When_calling_AlgebraicNumberCalculator_property_Then_the_correct_calculator_should_be_returned() =>
+            _factory!.AlgebraicNumberCalculator.Should().Be(_calculator);
 
         // Case 1
         [Test]
@@ -26,7 +45,7 @@ namespace Hilke.KineticConvolution.Tests
             When_calling_ConvolveArcAndSegment_With_two_shapes_without_tangents_Then_the_result_Should_be_empty()
         {
             // Arrange arc1
-            var arc = _factory.CreateArc(
+            var arc = _factory!.CreateArc(
                 radius: 2.0,
                 weight: 3,
                 centerX: 1.0,
@@ -58,7 +77,7 @@ namespace Hilke.KineticConvolution.Tests
             When_calling_ConvolveArcAndSegment_With_same_counterClockwise_orientation_Then_the_correct_result_Should_be_returned()
         {
             // Arrange arc
-            var arc = _factory.CreateArc(
+            var arc = _factory!.CreateArc(
                 radius: 2.0,
                 weight: 5,
                 centerX: 1.0,
@@ -86,7 +105,7 @@ namespace Hilke.KineticConvolution.Tests
                 weight: 20);
 
             // Act
-            var actual = _factory.ConvolveArcAndSegment(arc, segment);
+            var actual = _factory.ConvolveArcAndSegment(arc, segment).ToList();
 
 
             // Assert
@@ -100,7 +119,7 @@ namespace Hilke.KineticConvolution.Tests
             When_calling_ConvolveArcs_With_same_counterClockwise_orientation_and_r1_greater_than_r2_Then_the_correct_result_Should_be_returned()
         {
             // Arrange arc1
-            var arc1 = _factory.CreateArc(
+            var arc1 = _factory!.CreateArc(
                 radius: 2.0,
                 weight: 2,
                 centerX: 1.0,
@@ -136,7 +155,7 @@ namespace Hilke.KineticConvolution.Tests
                 orientation: Orientation.CounterClockwise);
 
             // Act
-            var actual = _factory.ConvolveArcs(arc1, arc2);
+            var actual = _factory.ConvolveArcs(arc1, arc2).ToList();
 
             // Assert
             actual.Should().HaveCount(1);
@@ -149,7 +168,7 @@ namespace Hilke.KineticConvolution.Tests
             When_calling_ConvolveArcs_With_different_orientation_and_r1_smaller_than_r2_Then_the_correct_result_Should_be_returned()
         {
             // Arrange arc1
-            var arc1 = _factory.CreateArc(
+            var arc1 = _factory!.CreateArc(
                 radius: 2.0,
                 weight: 2,
                 centerX: 1.0,
@@ -185,7 +204,7 @@ namespace Hilke.KineticConvolution.Tests
                 orientation: Orientation.CounterClockwise);
 
             // Act
-            var actual = _factory.ConvolveArcs(arc1, arc2);
+            var actual = _factory.ConvolveArcs(arc1, arc2).ToList();
 
             // Assert
             actual.Should().HaveCount(1);
@@ -198,7 +217,7 @@ namespace Hilke.KineticConvolution.Tests
             When_calling_ConvolveArcs_With_opposite_orientations_and_r1_greater_than_r2_Then_the_correct_result_Should_be_returned()
         {
             // Arrange arc1
-            var arc1 = _factory.CreateArc(
+            var arc1 = _factory!.CreateArc(
                 radius: 2.0,
                 weight: 1,
                 centerX: 1.0,
@@ -234,7 +253,7 @@ namespace Hilke.KineticConvolution.Tests
                 orientation: Orientation.CounterClockwise);
 
             // Act
-            var actual = _factory.ConvolveArcs(arc1, arc2);
+            var actual = _factory.ConvolveArcs(arc1, arc2).ToList();
 
             // Assert
             actual.Should().HaveCount(1);
@@ -247,7 +266,7 @@ namespace Hilke.KineticConvolution.Tests
             When_calling_ConvolveArcs_With_same_clockwise_orientation_and_r1_greater_than_r2_Then_the_correct_result_Should_be_returned()
         {
             // Arrange arc1
-            var arc1 = _factory.CreateArc(
+            var arc1 = _factory!.CreateArc(
                 radius: 2.0,
                 weight: 1,
                 centerX: 1.0,
@@ -283,7 +302,7 @@ namespace Hilke.KineticConvolution.Tests
                 orientation: Orientation.Clockwise);
 
             // Act
-            var actual = _factory.ConvolveArcs(arc1, arc2);
+            var actual = _factory.ConvolveArcs(arc1, arc2).ToList();
 
             // Assert
             actual.Should().HaveCount(1);
@@ -296,7 +315,7 @@ namespace Hilke.KineticConvolution.Tests
             When_calling_ConvolveArcs_With_opposite_orientation_and_r1_equals_r2_Then_the_correct_result_Should_be_returned()
         {
             // Arrange arc1
-            var arc1 = _factory.CreateArc(
+            var arc1 = _factory!.CreateArc(
                 radius: 2.0,
                 weight: 5,
                 centerX: 1.0,
@@ -332,7 +351,7 @@ namespace Hilke.KineticConvolution.Tests
                 orientation: Orientation.CounterClockwise);
 
             // Act
-            var actual = _factory.ConvolveArcs(arc1, arc2);
+            var actual = _factory.ConvolveArcs(arc1, arc2).ToList();
 
             // Assert
             actual.Should().HaveCount(1);
@@ -345,7 +364,7 @@ namespace Hilke.KineticConvolution.Tests
             When_calling_ConvolveArcs_With_same_counterClockwise_orientation_and_r1_smaller_than_r2_Then_the_correct_result_Should_be_returned()
         {
             // Arrange arc1
-            var arc1 = _factory.CreateArc(
+            var arc1 = _factory!.CreateArc(
                 radius: 1.0,
                 weight: 2,
                 centerX: 1.0,
@@ -381,7 +400,7 @@ namespace Hilke.KineticConvolution.Tests
                 orientation: Orientation.CounterClockwise);
 
             // Act
-            var actual = _factory.ConvolveArcs(arc1, arc2);
+            var actual = _factory.ConvolveArcs(arc1, arc2).ToList();
 
             // Assert
             actual.Should().HaveCount(1);
@@ -393,7 +412,7 @@ namespace Hilke.KineticConvolution.Tests
         public void When_calling_Convolve_With_two_segment_with_same_orientation_The_result_should_be_correct()
         {
             // Arrange segment
-            var segment1 = _factory.CreateSegment(
+            var segment1 = _factory!.CreateSegment(
                 startX: 10,
                 startY: 5,
                 endX: 10,
@@ -420,7 +439,7 @@ namespace Hilke.KineticConvolution.Tests
         public void When_calling_Convolve_With_two_segment_with_opposite_orientation_The_result_should_be_correct()
         {
             // Arrange segment 1
-            var segment1 = _factory.CreateSegment(
+            var segment1 = _factory!.CreateSegment(
                 startX: 10,
                 startY: 5,
                 endX: 10,
